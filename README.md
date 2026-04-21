@@ -12,13 +12,15 @@ It is just a simple MAC adress spoofer made in pyhon.
 ## Linux:
 **Download:**  
 ```bash  
-sudo cd /usr/share  
-sudo git clone https://github.com/abgache/macontrol.git  
-sudo cd macontrol  
-sudo pip install -r requirements.txt  
+sudo cd /usr/share
+sudo git clone https://github.com/abgache/macontrol.git
+sudo cd macontrol
+sudo pip install -r requirements.txt
 sudo chmod 555 /usr/share/macontrol/main.py
 sudo cp /usr/share/macontrol/bin/macontrol /bin/macontrol
-sudo cp /usr/share/macontrol/bin/macontrol-update /bin/macontrol-update  
+sudo cp /usr/share/macontrol/bin/macontrol-update /bin/macontrol-update
+sudo chmod 555 /bin/macontrol
+sudo chmod 555 /bin/macontrol-update
 ```  
 **Usage:**  
 ```bash  
