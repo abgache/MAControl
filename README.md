@@ -16,10 +16,9 @@ sudo cd /usr/share
 sudo git clone https://github.com/abgache/macontrol.git  
 sudo cd macontrol  
 sudo pip install -r requirements.txt  
-sudo chmod 555 /usr/share/macontrol/main.py  
-sudo chmod 555 /usr/share/macontrol/bin/macontrol  
-sudo chmod 555 /usr/share/macontrol/bin/macontrol-update  
-sudo echo 'export PATH="$PATH:/usr/share/macontrol/bin"' >> ~/.profile  
+sudo chmod 555 /usr/share/macontrol/main.py
+sudo cp /usr/share/macontrol/bin/macontrol /bin/macontrol
+sudo cp /usr/share/macontrol/bin/macontrol-update /bin/macontrol-update  
 ```  
 **Usage:**  
 ```bash  
