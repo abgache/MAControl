@@ -3,9 +3,10 @@ import argparse
 import platform
 import subprocess
 import re
+import os
 from colorama import init, Fore, Back, Style
 
-version = "0.0.1"
+version = "0.0.2"
 
 class mac():
     def __init__(self, interface="wlan0"):
@@ -60,6 +61,16 @@ class mac():
             exit(1)
         return self.base_mac
 
+def is_admin():
+    if platform.system() == "Windows":
+        import ctypes
+        try:
+            return ctypes.windll.shell32.IsUserAnAdmin()
+        except:
+            return False
+    else:  # Linux / macOS
+        return os.geteuid() == 0
+
 def banner():
     global version
     banner="""  __  __          _____            _             _ 
@@ -76,7 +87,8 @@ def main():
     parser = argparse.ArgumentParser(description="MAC Address Spoofer")
     parser.add_argument("-i", "--interface", help="Network interface to modify")
     parser.add_argument("-m", "--mac", help="Specify the new MAC adress (random if not specified)")
-    
+    parser.add_argument("--no-root",help=f"Disable the check for {'admin' if platform.system() == 'Windows' else 'root'} privileges",action="store_true")
+
     args = parser.parse_args()
 
     if not args.interface:
@@ -93,6 +105,13 @@ def main():
     mac_spoofer.get_current_mac()
 
     print(f"{Fore.CYAN}[/]{Style.RESET_ALL} Actual MAC adress : {mac_spoofer}")
+
+    if platform.system() == "Windows":
+        print(f"\033[38;5;208m[!]{Style.RESET_ALL} Windows is not fully supported, you may encounter problems.")
+    
+    if not is_admin() and not args.no_root:
+        print(f"{Fore.RED}[-]{Style.RESET_ALL} Please run the program with {'admin privileges' if platform.system() == 'Windows' else 'root privileges'}.")
+        exit(1)
 
 if __name__ == "__main__":
     banner()
