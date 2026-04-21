@@ -1,0 +1,19 @@
+#!/bin/bash
+echo "Updating MAControl in /usr/share/macontrol ..."
+sudo rm /usr/share/macontrol/main.py
+sudo rm /usr/share/macontrol/README.md
+sudo rm /usr/share/macontrol/requirements.txt
+sudo rm /usr/share/macontrol/bin/macontrol
+sudo rm /usr/share/macontrol/scripts/mac.py
+sudo rm /usr/share/macontrol/scripts/scripts.py
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/main.py -O /usr/share/macontrol/main.py
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/README.md -O /usr/share/macontrol/README.md
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/requirements.txt -O /usr/share/macontrol/requirements.txt
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/bin/macontrol -O /usr/share/macontrol/bin/macontrol
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/bin/macontrol-update -O /usr/share/macontrol/bin/macontrol-update
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/scripts/mac.py -O /usr/share/macontrol/scripts/mac.py
+wget https://github.com/abgache/macontrol/raw/refs/heads/main/scripts/scripts.py -O /usr/share/macontrol/scripts/scripts.py
+chmod 555 /usr/share/macontrol/main.py
+chmod 555 /usr/share/macontrol/bin/macontrol
+chmod 555 /usr/share/macontrol/bin/macontrol-update
+echo "For compatibility reasons, requirements.txt is not automatically installed, I you get any error when running MAControl try running pip install -r requirements.txt"

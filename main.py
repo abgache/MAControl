@@ -1,75 +1,13 @@
 #!/bin/python
 import argparse
 import platform
-import subprocess
-import re
 import os
-from colorama import init, Fore, Back, Style
+import random
+from colorama import init, Fore, Style, just_fix_windows_console
+from scripts.mac import mac as mac_spoofer_class
+import scripts.scripts as utilities
 
-version = "0.0.2"
-
-class mac():
-    def __init__(self, interface="wlan0"):
-        self.interface=interface
-        self.os = platform.system()
-        self.base_mac = None
-        self.spoofed = False
-        self.spoofed_mac = None
-
-    def __str__(self):
-        # Check si l'adresse a deja ete spoof
-        if not self.spoofed:
-            if self.base_mac:
-                return str(self.base_mac)
-            else:
-                print(f"{Fore.RED}[-]{Style.RESET_ALL} Please spoof your mac adress or get it before trying to see it.")
-                return ""
-        else:
-            if self.spoofed_mac:
-                return str(self.spoofed_mac)
-            else:
-                print(f"{Fore.RED}[-]{Style.RESET_ALL} The mac adress has been spoofed but no adress is registered.")
-                return ""
-
-    def get_current_mac(self, interface=None):
-        if interface == None:
-            interface = self.interface
-        # jst check l'os pr lancer une commande et parse la commande pr chopper le mac
-        try:
-            if self.os == "Windows":
-                result = subprocess.check_output(f"getmac /v /fo list", shell=True).decode()
-                # Parse Windows output to find MAC for interface
-                lines = result.split('\n')
-                for i, line in enumerate(lines):
-                    if interface.lower() in line.lower():
-                        # Look for MAC in nearby lines
-                        for j in range(i, min(i+10, len(lines))):
-                            mac_match = re.search(r"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})", lines[j])
-                            if mac_match:
-                                self.base_mac = mac_match.group(0).replace("-", ":")
-            else:
-                result = subprocess.check_output(f"ifconfig {interface}", shell=True).decode()
-                mac_search = re.search(r"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})", result)
-                if mac_search:
-                    self.base_mac = mac_search.group(0).replace("-", ":")
-        except Exception as e:
-            print(f"{Fore.RED}[-]{Style.RESET_ALL} Error getting MAC address: {e}")
-            exit(1)
-        
-        if not self.base_mac:
-            print(f"{Fore.RED}[-]{Style.RESET_ALL} No mac adress found for this interface, please check your interface.")
-            exit(1)
-        return self.base_mac
-
-def is_admin():
-    if platform.system() == "Windows":
-        import ctypes
-        try:
-            return ctypes.windll.shell32.IsUserAnAdmin()
-        except:
-            return False
-    else:  # Linux / macOS
-        return os.geteuid() == 0
+version = "1.0.0"
 
 def banner():
     global version
@@ -91,28 +29,40 @@ def main():
 
     args = parser.parse_args()
 
+    # gerer l'interface
     if not args.interface:
-        if platform.system() == "Windows":
-            print(f"{Fore.YELLOW}[*]{Style.RESET_ALL} No interface given defaulting to Wi-Fi 1")
-            interface = "Wi-Fi 1"
-        else:
-            print(f"{Fore.YELLOW}[*]{Style.RESET_ALL} No interface given defaulting to wlan0")
-            interface = "wlan0"
+        print(f"{Fore.YELLOW}[*]{Style.RESET_ALL} No interface given, defaulting to {'Wi-Fi 1' if platform.system() == 'Windows' else 'wlan0'}")
+        interface = 'Wi-Fi 1' if platform.system() == 'Windows' else "wlan0"
     else:
         interface = str(args.interface)
     
-    mac_spoofer = mac(interface=interface)
+    # init la classe
+    mac_spoofer = mac_spoofer_class(interface=interface)
     mac_spoofer.get_current_mac()
 
     print(f"{Fore.CYAN}[/]{Style.RESET_ALL} Actual MAC adress : {mac_spoofer}")
 
+    # warn parce trop la flemme de rendre windows stable
     if platform.system() == "Windows":
         print(f"\033[38;5;208m[!]{Style.RESET_ALL} Windows is not fully supported, you may encounter problems.")
     
-    if not is_admin() and not args.no_root:
+    # check si le programme est launch en tant qu'admin
+    if not utilities.is_admin() and not args.no_root:
         print(f"{Fore.RED}[-]{Style.RESET_ALL} Please run the program with {'admin privileges' if platform.system() == 'Windows' else 'root privileges'}.")
         exit(1)
 
+    if not args.mac: # utilities.generate_mac
+        mac2spoof = utilities.generate_mac()
+        print(f"{Fore.YELLOW}[*]{Style.RESET_ALL} No MAC adress given, spoofing to random mac.")
+    else:
+        mac2spoof = str(args.mac)
+    
+    print(f"{Fore.CYAN}[/]{Style.RESET_ALL} New mac adress : {mac2spoof}")
+
+    mac_spoofer.spoof(mac2spoof)
+
 if __name__ == "__main__":
+    if platform.system() == "Windows":
+        just_fix_windows_console()
     banner()
     main()
