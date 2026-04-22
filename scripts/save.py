@@ -1,6 +1,6 @@
 import json
 import os
-from colorama import init, Fore, Style
+from colorama import Fore, Style
 
 class backup():
     def __init__(self, filename="backup.json"):

@@ -8,7 +8,7 @@ from scripts.mac import mac as mac_spoofer_class
 import scripts.scripts as utilities
 from scripts.save import backup as _backup
 
-version = "1.1.0"
+version = "1.1.2"
 
 def banner():
     global version
