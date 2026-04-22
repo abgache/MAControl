@@ -6,8 +6,9 @@ import random
 from colorama import init, Fore, Style, just_fix_windows_console
 from scripts.mac import mac as mac_spoofer_class
 import scripts.scripts as utilities
+from scripts.save import backup as _backup
 
-version = "1.0.1"
+version = "1.1.0"
 
 def banner():
     global version
@@ -26,7 +27,7 @@ def main():
     parser.add_argument("-i", "--interface", help="Network interface to modify")
     parser.add_argument("-m", "--mac", help="Specify the new MAC adress (random if not specified)")
     parser.add_argument("--no-root",help=f"Disable the check for {'admin' if platform.system() == 'Windows' else 'root'} privileges",action="store_true")
-    # parser.add_argument("-b","--back",help=f"Roll back to original MAC address",action="store_true")
+    parser.add_argument("-b","--back",help=f"Roll back to original MAC address",action="store_true")
 
     args = parser.parse_args()
 
@@ -40,8 +41,10 @@ def main():
     # init la classe
     mac_spoofer = mac_spoofer_class(interface=interface)
     mac_spoofer.get_current_mac()
+    backup = _backup(filename="backup.json")
 
     print(f"{Fore.CYAN}[/]{Style.RESET_ALL} Actual MAC adress : {mac_spoofer}")
+    backup.save(interface, mac_spoofer)
 
     # warn parce trop la flemme de rendre windows stable
     if platform.system() == "Windows":
@@ -51,6 +54,15 @@ def main():
     if not utilities.is_admin() and not args.no_root:
         print(f"{Fore.RED}[-]{Style.RESET_ALL} Please run the program with {'admin privileges' if platform.system() == 'Windows' else 'root privileges'}.")
         exit(1)
+
+    if args.back:
+        original_mac = backup.get(interface)
+        if not original_mac:
+            print(f"{Fore.RED}[-]{Style.RESET_ALL} No backup found for this interface, cannot roll back.")
+            exit(1)
+        print(f"{Fore.YELLOW}[*]{Style.RESET_ALL} Rolling back to original MAC address: {original_mac}")
+        mac_spoofer.spoof(original_mac)
+        exit(0)
 
     if not args.mac: # utilities.generate_mac
         mac2spoof = utilities.generate_mac()

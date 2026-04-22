@@ -1,7 +1,7 @@
 # MAControl  
 ## Change your MAC adress in a single command.  
 
-### Version : ``1.0.1`` 
+### Version : ``1.1.0`` 
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/) 
 
@@ -24,8 +24,14 @@ sudo chmod 555 /bin/macontrol-update
 ```  
 **Usage:**  
 ```bash  
-macontrol [-h] [-i INTERFACE] [-m MAC] [--no-root]
+macontrol [-h] [-i INTERFACE] [-m MAC] [--no-root] [-b]
 ```  
+**options:**  
+> -h, --help                           show this help message and exit  
+> -i INTERFACE, --interface INTERFACE  Network interface to modify  
+> -m MAC, --mac MAC                    Specify the new MAC adress (random if not specified)  
+> --no-root                            Disable the check for admin privileges  
+> -b, --back                           Roll back to original MAC address  
 **Update:**  
 ```bash  
 sudo /usr/share/macontrol/bin/macontrol-update  
