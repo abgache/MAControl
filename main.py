@@ -7,7 +7,7 @@ from colorama import init, Fore, Style, just_fix_windows_console
 from scripts.mac import mac as mac_spoofer_class
 import scripts.scripts as utilities
 
-version = "1.0.0"
+version = "1.0.1"
 
 def banner():
     global version
@@ -26,6 +26,7 @@ def main():
     parser.add_argument("-i", "--interface", help="Network interface to modify")
     parser.add_argument("-m", "--mac", help="Specify the new MAC adress (random if not specified)")
     parser.add_argument("--no-root",help=f"Disable the check for {'admin' if platform.system() == 'Windows' else 'root'} privileges",action="store_true")
+    # parser.add_argument("-b","--back",help=f"Roll back to original MAC address",action="store_true")
 
     args = parser.parse_args()
 

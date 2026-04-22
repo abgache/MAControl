@@ -9,8 +9,8 @@ class mac():
         self.interface=interface
         self.os = platform.system()
         self.base_mac = None
-        self.spoofed = False
         self.spoofed_mac = None
+        self.spoofed = False # Mac spoofing status
 
     def __str__(self): # renvoie l'adresse mac actuelle
         # Check si l'adresse a deja ete spoof
@@ -72,7 +72,9 @@ class mac():
                 subprocess.run(["sudo", "ifconfig", interface, "hw", "ether", new_mac], check=True)
                 subprocess.run(["sudo", "ifconfig", interface, "up"], check=True)
                 print(f"{Fore.GREEN}[+]{Style.RESET_ALL} MAC address changed.")
+            self.spoofed = True
         except Exception as e:
+            self.spoofed = False
             print(f"{Fore.RED}[-]{Style.RESET_ALL} Spoof failed : {e}")
             print(f"{Fore.CYAN}[/]{Style.RESET_ALL} Actual MAC adress : {self.get_current_mac()}")
             exit(2)

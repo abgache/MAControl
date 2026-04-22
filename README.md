@@ -1,7 +1,7 @@
 # MAControl  
 ## Change your MAC adress in a single command.  
 
-### Version : ``1.0.0`` 
+### Version : ``1.0.1`` 
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/) 
 
